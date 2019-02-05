@@ -1,0 +1,23 @@
+{
+  "extends": ["airbnb-base", "plugin:prettier/recommended"],
+  "rules": {
+    "no-console": 0,
+    "no-plusplus": 0,
+    "no-inline-comments": "off",
+    "no-undef": "warn",
+    "no-unused-vars": "warn",
+    "no-use-before-define": "warn",
+    "no-restricted-syntax": [
+      "off",
+      {
+        "selector": "ForOfStatement",
+        "message": "frowned upon using For...Of"
+      }
+    ]
+    // "line-comment-position": ["warn", { "position": "above" }]
+  },
+  "env": {
+    "browser": true,
+    "webextensions": true
+  }
+}
