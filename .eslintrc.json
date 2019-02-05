@@ -14,7 +14,6 @@
         "message": "frowned upon using For...Of"
       }
     ]
-    // "line-comment-position": ["warn", { "position": "above" }]
   },
   "env": {
     "browser": true,
