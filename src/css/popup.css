@@ -1,0 +1,35 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-width: 400px;
+    /* min-height: 300px; */
+    /* margin: 50px auto; */
+    background: #282828;
+    color: whitesmoke;
+    /* border-radius: 5px; */
+}
+
+.title {
+    text-align: center;
+}
+
+.list-item {
+    border-color: black;
+    border-width: 3px;
+    /* background-color: bisque; */
+    padding: 0.5em;
+    border-radius: 3px;
+}
+
+.user-string-text {
+    background-color: blueviolet;
+}
+
+.user-string-field {
+    border: none;
+    background: pink;
+}

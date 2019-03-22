@@ -1,22 +1,28 @@
 {
-  "extends": ["airbnb-base", "plugin:prettier/recommended"],
-  "rules": {
-    "no-console": 0,
-    "no-plusplus": 0,
-    "no-inline-comments": "off",
-    "no-undef": "warn",
-    "no-unused-vars": "warn",
-    "no-use-before-define": "warn",
-    "no-restricted-syntax": [
-      "off",
-      {
-        "selector": "ForOfStatement",
-        "message": "frowned upon using For...Of"
-      }
-    ]
-  },
-  "env": {
-    "browser": true,
-    "webextensions": true
-  }
+    "extends": ["airbnb-base", "plugin:prettier/recommended"],
+    "rules": {
+        "no-console": 0,
+        "no-plusplus": 0,
+        "no-inline-comments": "off",
+        "no-undef": "warn",
+        "no-unused-vars": "warn",
+        "no-use-before-define": "off",
+        "no-restricted-syntax": [
+            "off",
+            {
+                "selector": "ForOfStatement",
+                "message": "frowned upon using For...Of"
+            }
+        ],
+        "prettier/prettier": [
+            "error",
+            {
+                "printWidth": 120
+            }
+        ]
+    },
+    "env": {
+        "browser": true,
+        "webextensions": true
+    }
 }

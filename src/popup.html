@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="css/popup.css" />
+        <!-- <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"> -->
+        <title>Titlest Options Page</title>
+    </head>
+    <body>
+        <h1 class="title">Titlest</h1>
+        <div class="main-options-container">
+            <div id="global-options" class="global-options-container">
+                <h2>Global Options</h2>
+                <div class="global-enable-option">
+                    <p class="global-option-text">
+                        Select to enable or deselct to disable globally:
+                    </p>
+                    <input
+                        type="checkbox"
+                        name="global-enable"
+                        id="global-enable"
+                        class="global-enable"
+                    />
+                    <label for="global-enable">enable/disable</label>
+                </div>
+                <div class="global-window-reload-option">
+                    <p class="global-option-text">
+                        Select to reload websites on setting changes:
+                    </p>
+                    <input
+                        type="checkbox"
+                        name="global-window-reload"
+                        id="global-window-reload"
+                        class="global-window-reload"
+                    />
+                    <label for="global-window-reload">Enable/Disable</label>
+                </div>
+            </div>
+        </div>
+        <div class="main-list-container">
+            <h2>Site List</h2>
+            <ul id="hostname-list" class="hostnames">
+                <template id="template-storage-item">
+                    <li class="list-item" data-id="">
+                        <div class="item">
+                            <form>
+                                <div class="hostname-and-title-strings">
+                                    <span class="hostname-text list-item-text"
+                                        ><!-- google.com --></span
+                                    ><span
+                                        class="user-string-text list-item-text"
+                                        ><!-- - booble --></span
+                                    >
+                                </div>
+                                <div class="title-string">
+                                    <input
+                                        class="user-string-field list-item-text"
+                                        type="text"
+                                        name="usrString"
+                                        size="45"
+                                        placeholder="specify an appendment or title: press [enter] to save"
+                                    />
+                                </div>
+                                <div class="item-actions">
+                                    <input
+                                        type="radio"
+                                        class="radio-btn"
+                                        name="action"
+                                        value="append-btn"
+                                        checked=""
+                                    />
+                                    <label for="append" class="list-item-text"
+                                        >Append</label
+                                    >
+                                    <input
+                                        type="radio"
+                                        class="radio-btn"
+                                        name="action"
+                                        value="overwrite-btn"
+                                        checked=""
+                                    />
+                                    <label
+                                        for="overwrite"
+                                        class="list-item-text"
+                                        >Overwrite</label
+                                    >
+                                    <input
+                                        type="checkbox"
+                                        name="enable"
+                                        class="enable"
+                                    />
+                                    <label for="enabled">enable/disable</label>
+                                    <button
+                                        type="button"
+                                        value="delete-btn"
+                                        id="delete"
+                                        class="delete-btn"
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </li>
+                </template>
+            </ul>
+        </div>
+        <script type="text/javascript" src="js/storage.js"></script>
+        <script type="text/javascript" src="js/popup.js"></script>
+    </body>
+</html>

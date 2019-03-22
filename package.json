@@ -1,21 +1,21 @@
 {
-  "name": "titlest",
-  "version": "1.0.0",
-  "description": "an extension with the ability to replace or append a sites title",
-  "main": ".eslintrc.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
-  "devDependencies": {
-    "@types/chrome": "^0.0.78",
-    "eslint": "^5.12.0",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-config-prettier": "^4.0.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-prettier": "^3.0.1",
-    "prettier": "^1.15.3"
-  }
+    "name": "titlest",
+    "version": "1.0.0",
+    "description": "an extension with the ability to replace or append a sites title",
+    "main": ".eslintrc.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/chrome": "^0.0.81",
+        "eslint": "^5.15.3",
+        "eslint-config-airbnb-base": "^13.1.0",
+        "eslint-config-prettier": "^4.1.0",
+        "eslint-plugin-import": "^2.16.0",
+        "eslint-plugin-prettier": "^3.0.1",
+        "prettier": "^1.16.4"
+    }
 }
