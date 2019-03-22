@@ -47,8 +47,6 @@ function formatTitle(pageObject) {
     } else if (!pageObject.enabled) {
       chrome.runtime.sendMessage({ iconState: "disabled" });
     }
-  } else {
-    console.log("the end is neigh!");
   }
 }
 /* chrome.runtime.onMessage.addListener(message => {
