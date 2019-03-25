@@ -42,7 +42,6 @@ function getHostName() {
         reject(new Error("tabs array is empty"));
       } else {
         const hostName = new URL(tabs[0].url).hostname;
-        // resolve(new URL(tabs[0].url).hostname);
         resolve(hostName);
       }
     });
@@ -51,16 +50,9 @@ function getHostName() {
 
 // listeners for setting icon
 chrome.tabs.onActivated.addListener(getHostName);
-chrome.tabs.onActivated.addListener(activeInfo => {
-  console.log("TCL: activeInfo.tabId", activeInfo.tabId);
-  console.log("TCL: activeInfo.windowId", activeInfo.windowId);
-});
-chrome.windows.onFocusChanged.addListener(integer => {
-  console.log("LOG: integer", integer);
-});
-chrome.windows.getLastFocused(getInfo => {
-  console.log("LOG: getInfos", getInfo.populate);
-});
+chrome.tabs.onActivated.addListener(activeInfo => {});
+chrome.windows.onFocusChanged.addListener(integer => {});
+chrome.windows.getLastFocused(getInfo => {});
 
 chrome.tabs.onActivated.addListener(setIcon);
 async function setIcon() {
