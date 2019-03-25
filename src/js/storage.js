@@ -55,10 +55,8 @@ function filterPage(storage, docHostName) {
   );
 
   if (!filteredArray) {
-    // console.log("page is not in the array");
     return false;
   }
-  // console.log("page is in array");
   return filteredArray;
 }
 
