@@ -1,6 +1,6 @@
 # Titlest
 
-this is a simple extension to replace or append a websites title with whatever you want. the extension name is a play on the golf brand. no, i dont like golf.
+a simple extension to replace or append a websites title with whatever you want. the extension name is a play on the golf brand. no, i dont like golf.
 
 ## Overview
 
