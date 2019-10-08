@@ -1,6 +1,10 @@
 {
-    "name": "test-icons-trash-too",
-    "version": "0.1.0",
+    "name": "titlest",
+    "version": "2.0.0",
+    "description": "an extension with the ability to replace or append a sites title",
+    "keywords": [],
+    "author": "",
+    "license": "MIT",
     "private": true,
     "scripts": {
         "serve": "vue-cli-service build --mode=development --watch",
