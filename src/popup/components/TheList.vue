@@ -83,7 +83,6 @@ export default {
   data() {
     return {
       panel: [],
-      // userTitleToValidate: "",
       appendState: "",
       key: 0
     };
@@ -101,7 +100,6 @@ export default {
       this.panel = [];
     },
     updateName(e) {
-      // this.commit("UPDATE_NAME", e.target.value);
       this.UPDATE_NAME(e.target.value);
       console.log("comit updated name value");
     },
@@ -109,17 +107,7 @@ export default {
       this.$store.commit("UPDATE_USER_TITLE", { index, value });
     },
     userTitleProxy(index, value) {
-      // console.log(`LOG: userTitleProxy -> value`, value);
-      // console.log(
-      //   `LOG: userTitleProxy -> this.$refs.userTitleInput[index]`,
-      //   this.$refs.userTitleInput[index]
-      // );
-      // this.userTitleToValidate = value;
       if (!this.$refs.userTitleInput[index]) return;
-      // console.log(
-      //   `LOG: userTitleProxy -> this.userTitleToValidate`,
-      //   this.userTitleToValidate
-      // );
       this.$refs.userTitleInput[index].validate(value).then(result => {
         if (result.valid) {
           console.log(`LOG: userTitleProxy -> result`, result);
