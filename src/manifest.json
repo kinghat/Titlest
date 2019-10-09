@@ -1,30 +1,32 @@
 {
-    "name": "Titlest",
-    "description": "an extension with the ability to replace or append a websites title",
-    "version": "1.0.0",
     "manifest_version": 2,
+    "name": "Titlest",
+    "homepage_url": "http://localhost/",
+    "description": "an extension with the ability to replace or append a websites title",
+    "version": "2.0.0",
     "permissions": [
         "activeTab",
         "tabs",
-        "contextMenus",
+        "<all_urls>",
+        "*://*/*",
         "storage",
         "unlimitedStorage",
-        "<all_urls>",
-        "notifications"
+        "contextMenus",
+        "notifications",
+        "webNavigation"
     ],
     "background": {
-        "scripts": ["js/storage.js", "js/background.js"],
-        "persistent": false
+        "scripts": ["background/background.js"]
     },
     "browser_action": {
+        "default_title": "Open Titlest",
+        "default_popup": "popup/popup.html",
         "default_icon": {
             "16": "img/t16.png",
             "32": "img/t32.png",
             "48": "img/t48.png",
             "128": "img/t128.png"
-        },
-        "default_title": "Open Titlest",
-        "default_popup": "popup.html"
+        }
     },
     "icons": {
         "16": "img/t16.png",
@@ -34,11 +36,11 @@
     },
     "content_scripts": [
         {
-            "js": ["js/storage.js", "js/content.js"],
-            "matches": ["<all_urls>"],
-            "run_at": "document_start"
+            "js": ["content-scripts/content-script.js"],
+            "matches": ["<all_urls>"]
         }
     ],
+    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
     "commands": {
         "add-site": {
             "suggested_key": {

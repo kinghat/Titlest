@@ -15,3 +15,39 @@ _before i push the extension to the respective browser stores i need to convert 
 -   first you need to put the files on your local system by cloning or downloading the repository and extracting it.
 
 -   to install in chrome go to `chrome://extensions/` in your navigation bar. turn on "Developer Mode" in the top right and the click on the "Load unpacked" in the top left. select the `src/` directory. it should now be loaded as an "unpacked extension."
+
+## Development
+
+### Project setup
+
+```
+yarn install
+```
+
+#### Compiles and hot-reloads for development
+
+```
+yarn run serve
+```
+
+#### Compiles and minifies for production
+
+```
+yarn run build
+```
+
+#### Run your tests
+
+```
+yarn run test
+```
+
+#### Lints and fixes files
+
+```
+yarn run lint
+```
+
+#### Customize configuration
+
+See [Configuration Reference](https://cli.vuejs.org/config/).
