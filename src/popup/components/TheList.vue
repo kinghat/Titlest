@@ -1,9 +1,5 @@
 <template>
   <div>
-    <!-- <div class="text-xs-center d-flex pb-3">
-      <v-btn @click="expandAll">expand all</v-btn>
-      <v-btn @click="expandNone">none</v-btn>
-    </div>-->
     <v-expansion-panels v-model="panel" focusable multiple>
       <v-expansion-panel v-for="(host, index) in hosts" :key="index">
         <v-expansion-panel-header v-slot="{ open }">
@@ -41,7 +37,7 @@
                   >-->
                   <v-text-field
                     :value="host.userTitle"
-                    @input="value => userTitleProxy(index, value)"
+                    @input="value => setHostProperty({index: index, mutation: 'SET_USER_TITLE', value})"
                     placeholder="NO TITLE SET!"
                     single-line
                     outlined
@@ -52,7 +48,11 @@
               </v-flex>
               <v-flex xs8>
                 <ValidationProvider name="append">
-                  <v-radio-group v-model="host.append" row>
+                  <v-radio-group
+                    :value="host.isAppended"
+                    @change="value => setHostProperty({index: index, mutation: 'SET_IS_APPENDED', value})"
+                    row
+                  >
                     <v-radio :value="true" label="append"></v-radio>
                     <v-radio :value="false" label="overwrite"></v-radio>
                   </v-radio-group>
@@ -61,6 +61,7 @@
               <v-flex xs4>
                 <v-switch
                   v-model="host.hostState"
+                  @change="setHostProperty({index: index, mutation: 'SET_HOST_STATE', value: $event})"
                   :label="`${host.hostState && 'enabled' || 'disabled' }`"
                   color="green accent-4"
                 ></v-switch>
@@ -74,10 +75,8 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
-// import { mapMultiRowFields, mapFields } from "vuex-map-fields";
+import { mapState, mapMutations, mapActions } from "vuex";
 import { ValidationProvider, ValidationObserver, validate } from "vee-validate";
-import { get, sync } from "vuex-pathify";
 
 export default {
   data() {
@@ -91,59 +90,31 @@ export default {
     ValidationProvider,
     ValidationObserver
   },
-  methods: {
-    ...mapMutations(["UPDATE_NAME", "UPDATE_HOST"]),
-    expandAll() {
-      this.panel = this.hosts.map((k, i) => i);
-    },
-    expandNone() {
-      this.panel = [];
-    },
-    updateName(e) {
-      this.UPDATE_NAME(e.target.value);
-      console.log("comit updated name value");
-    },
-    updateUserTitle(index, value) {
-      this.$store.commit("UPDATE_USER_TITLE", { index, value });
-    },
-    userTitleProxy(index, value) {
-      if (!this.$refs.userTitleInput[index]) return;
-      this.$refs.userTitleInput[index].validate(value).then(result => {
-        if (result.valid) {
-          console.log(`LOG: userTitleProxy -> result`, result);
-          this.updateUserTitle(index, value);
-        }
-      });
-    }
-  },
   computed: {
-    ...mapState(["options", "hosts"]),
-    // ...mapMultiRowFields(["hosts"]),
-    // hosts: sync("hosts"),
-    // dynamicProp :sync('dynamic/:name@items[:index].value'),
-    dynamicUserTitle: sync("hosts[:key].userTitle")
-    // hosts: {
-    //   get() {
-    //     // return this.$store.getters.hosts;
-    //     console.log("GETTER LOG: ", this.$store.state.hosts);
-    //     return this.$store.state.hosts;
-    //   },
-    //   set(value) {
-    //     // console.log(value);
-    //     this.$store.commit("UPDATE_HOST", value);
-    //   }
+    ...mapState({
+      globals: state => state.globals.options,
+      hosts: state => state.hosts.hosts
+    })
+  },
+  methods: {
+    ...mapActions({
+      setHostProperty: "hosts/setHostProperty"
+    })
+    // sendHostProperty(index, mutation, value) {
+    //   const payload = { index, mutation, value };
+    //   this.setHostProperty(...payload);
     // },
-    // userTitleProxy: {
-    //   get() {
-    //     return this.userTitleToValidate;
-    //   },
-    //   set(value) {
-    //     (this.userTitleToValidate = value),
-    //       this.$refs.userTitleInput,
-    //       validate(value).then(result => {
-    //         if (result) this.host.userTitle = value;
-    //       });
-    //   }
+    // showEvent(event) {
+    //   console.log(`LOG: showEvent -> event`, event);
+    // }
+    // userTitleValidationProxy(index, objectProperty, value) {
+    //   if (!this.$refs.userTitleInput[index]) return;
+    //   this.$refs.userTitleInput[index].validate(value).then(result => {
+    //     if (result.valid) {
+    //       console.log(`LOG: userTitleValidationProxy -> result`, result);
+    //       this.setHostProperty(index, objectProperty, value);
+    //     }
+    //   });
     // }
   }
 };

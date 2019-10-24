@@ -10,8 +10,13 @@ console.log("HOLA FROM CONTENT-SCRIPT!");
 
 // const testVariable = "is this printing?";
 // console.log("testVariable from content-script: ", testVariable);
-
-browser.runtime.sendMessage({ type: "contentScriptInit", hostname: document.location.hostname });
+// debugger;
+window.addEventListener("DOMContentLoaded", sendInitMessage());
+window.removeEventListener("DOMContentLoaded", sendInitMessage);
+function sendInitMessage() {
+  browser.runtime.sendMessage({ type: "contentScriptInit", hostname: document.location.hostname, SENTFROM: document.location });
+}
+// browser.runtime.sendMessage({ type: "contentScriptInit", hostname: document.location.hostname, SENTFROM: document.location });
 
 // function clickPause() {
 //   document.querySelector(`[title="Pause"]`).click()

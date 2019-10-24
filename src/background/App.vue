@@ -1,120 +1,129 @@
-<template>
-  <div>
-    <!-- <input v-model="hosts[0].userTitle" /> -->
-    <!-- <input v-model="getHostByHostName()" /> -->
-    <!-- {{hosts[0].userTitle}} -->
-    <!-- {{hosts}} -->
-    <!-- <input v-model="getHostByHostName" /> -->
-    <!-- {{ getHostByHostName("www.google.com") }} -->
-  </div>
-</template>
+<template></template>
 
 <script>
-// <div>{{this.hosts[0].userTitle}}</div>
 import browser from "webextension-polyfill";
 import { mapState, mapGetters, mapActions } from "vuex";
-import { mapMultiRowFields, mapFields } from "vuex-map-fields";
-// import { Promise } from "q";
 
 export default {
-  // name: "App",
+  name: "App",
   data() {
-    return {
-      // hostObject: "",
-      // userTitleer: { ...this.hosts }
-    };
+    return {};
   },
 
   computed: {
-    ...mapState(["options", "name", "hosts"]),
-
-    ...mapGetters(["getHostByHostName"]),
-    logHostString(hoststring) {
-      // const userTitle = getHostByHostName();
-      console.log(
-        "userTitle: ",
-        this.$store.getters.getHostByHostName(hoststring)
-      );
-    }
+    // ...mapGetters("hosts", { getHostByHostName: "getHostByHostName" })
+    ...mapGetters({
+      getHostByHostName: "hosts/getHostByHostName"
+    })
+    // getHostByHostName: hostname =>
+    //   this.$store.getters["hosts/getHostByHostName"](hostname)
   },
 
   methods: {
-    ...mapActions(["setHostDefaultTitle"]),
+    // ...mapActions("hosts", { setHostDefaultTitle: "setHostDefaultTitle" }),
+    ...mapActions({
+      setHostProperty: "hosts/setHostProperty"
+    }),
 
     formatDocumentTitle(hostObject, documentObject) {
       let userTitle = hostObject.userTitle;
       let documentTitle = documentObject.title;
-      const formattedTitle = hostObject.append
+      const formattedTitle = hostObject.isAppended
         ? (documentTitle += userTitle)
         : (documentTitle = userTitle);
       return formattedTitle;
     },
 
     preventDocumentLoops(hostObject, documentObject) {
-      // debugger;
       if (
-        hostObject.append &&
+        hostObject.isAppended &&
         documentObject.title ===
           `${hostObject.defaultTitle}${hostObject.userTitle}`
       )
         return;
       if (
-        !hostObject.append &&
+        !hostObject.isAppended &&
         documentObject.title === `${hostObject.userTitle}`
       )
         return;
       if (
-        hostObject.append &&
+        hostObject.isAppended &&
         documentObject.title.includes(hostObject.userTitle)
       )
         return;
 
-      // return formatDocumentTitle(hostObject, documentObject);
       return true;
+    },
+    sendHostProperty1(mutation, value, index) {
+      const payload = { index, mutation, value };
+      console.log(`LOG: sendHostProperty -> payload`, payload);
+      this.setHostProperty(payload);
     }
   },
 
-  // beforeCreate: function() {
-  // },
+  mounted() {
+    const tabs = browser.tabs.query({});
 
-  created: function() {
+    console.log(tabs);
+    function handleUpdated(tabId, changeInfo, tabInfo) {
+      // console.log(
+      //   `LOG: handleUpdated -> tabId, changeInfo, tabInfo`,
+      //   `tabId: `,
+      //   tabId,
+      //   `changeInfo: `,
+      //   changeInfo,
+      //   `tabInfo: `,
+      //   tabInfo
+      // );
+      if (tabInfo.status === "complete" && changeInfo.title !== undefined) {
+        console.log(
+          `id: ${tabId},
+        title: ${changeInfo.title},
+        url: ${tabInfo.url}`
+        );
+      }
+    }
+
+    browser.tabs.onUpdated.addListener(handleUpdated);
+
     browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-      const returnedHostObject = this.$store.getters.getHostByHostName(
-        message.hostname
-      );
+      const hostObject = this.getHostByHostName(message.hostname);
+      // console.log(`LOG: created -> message`, message);
+      // console.log(
+      //   `LOG: created -> this.getHostByHostName(message.hostname)`,
+      //   this.getHostByHostName(message.hostname)
+      // );
 
-      if (message.type === "contentScriptInit" && returnedHostObject) {
+      if (message.type === "contentScriptInit" && hostObject) {
         browser.tabs.executeScript(sender.tab.id, {
           file: "/content-scripts/content-script-inject.js"
         });
-      } else if (message.type === "contentScriptInjectInit") {
-        this.setHostDefaultTitle(message);
+      } else if (message.type === "contentScriptInjectInit" && hostObject) {
+        console.log(`contentScriptInjectInit message: `, message);
+        this.setHostProperty({
+          mutation: "SET_DEFAULT_TITLE",
+          value: message.hostname
+        });
 
-        if (returnedHostObject.hostState) {
+        if (hostObject) {
           return Promise.resolve({
             type: "updateTitle",
-            title: this.formatDocumentTitle(returnedHostObject, message)
+            title: this.formatDocumentTitle(hostObject, message)
           });
         }
-      } else if (message.type === "contentScriptTitleMutation") {
+      } else if (message.type === "contentScriptTitleMutation" && hostObject) {
         console.log(`contentScriptTitleMutation message: `, message);
-        this.setHostDefaultTitle(message);
-        console.log(
-          `returnedHostObject.defaultTitle: `,
-          returnedHostObject.defaultTitle
-        );
+        this.setHostProperty({
+          mutation: "SET_DEFAULT_TITLE",
+          value: message.hostname
+        });
 
-        if (returnedHostObject.hostState) {
-          // console.log(
-          //   `LOG: preventDocumentLoops(returnedHostObject, message)`,
-          //   this.preventDocumentLoops(returnedHostObject, message)
-          // );
-
-          if (!this.preventDocumentLoops(returnedHostObject, message)) return;
+        if (hostObject.hostState) {
+          if (!this.preventDocumentLoops(hostObject, message)) return;
 
           return Promise.resolve({
             type: "updateTitle",
-            title: this.formatDocumentTitle(returnedHostObject, message)
+            title: this.formatDocumentTitle(hostObject, message)
           });
         }
       } else {
@@ -125,39 +134,6 @@ export default {
       }
       return true;
     });
-  },
-
-  // beforeMount: function() {},
-
-  mounted: function() {
-    console.log("<mounted>");
-
-    // console.log(document.location.hostname);
-    // console.log(getHostByHostName("www.google.com"));
-    // logHostString("www.google.com");
-    // stateHosts();
-    // console.log(getHostByHostName(document.location.hostname));
-    // getHostByHostName(document.location.hostname);
-    // this.$store.watch(
-    //   (state, getters) => getters.hosts[0].userTitle,
-    //   (newValue, oldValue) => {
-    //     console.log(`Updating from ${oldValue} to ${newValue}`);
-
-    //     // Do whatever makes sense now
-    //     // if (newValue === 'success') {
-    //     //   this.complex = {
-    //     //     deep: 'some deep object',
-    //     //   };
-    //     // }
-    //   }
-    // );
-
-    console.log("</mounted>");
-  },
-  updated: function() {
-    console.log("<updated>");
-
-    console.log("</updated>");
   }
 };
 
