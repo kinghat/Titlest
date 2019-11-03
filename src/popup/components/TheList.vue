@@ -107,88 +107,10 @@ export default {
       // this.setHostProperty(payload);
       await this.$store.dispatch("hosts/setHostProperty", payload);
       // this.updateTabs(payload);
-      if (payload.host.hostState) {
-        browser.runtime.sendMessage({
-          type: "updateTabs",
-          ...payload
-        });
-      }
-      // browser.runtime.sendMessage({
-      //   type: "updateTabs",
-      //   host: payload.host,
-      //   mutation: payload.mutation,
-      //   value: payload.value
-      // });
-    },
-    // async updateTabs(payload) {
-    //   console.log(`LOG: updateTabs WAS CALLED!`);
-    //   try {
-    //     if (!payload.host.hostState) return;
-    //     const tabs = await browser.tabs.query({
-    //       url: `*://${payload.host.hostName}/*`
-    //     });
-    //     // console.log(`LOG: updateTabs -> tabs: `, tabs);
-
-    //     for (const tab of tabs) {
-    //       if (payload.host.isAppended && tab.title !== payload.host.userTitle) {
-    //         const tabTitle = tab.title;
-    //         console.log(`LOG: init -> title`, tabTitle);
-    //         const defaultTitle = tabTitle.replace(
-    //           `${payload.host.userTitle}`,
-    //           ""
-    //         );
-    //         console.log(`LOG: init -> defaultTitle`, defaultTitle);
-    //         await this.$store.dispatch("hosts/setHostProperty2", {
-    //           mutation: "SET_DEFAULT_TITLE",
-    //           value: defaultTitle,
-    //           host: payload.host
-    //         });
-    //       }
-    //       const loopCheck = this.preventDocumentLoops(payload.host, tab);
-    //       // console.log(`LOG: init -> tabObject: `, tabObject);
-    //       if (payload.mutation === "SET_USER_TITLE" && loopCheck) {
-    //         const title = this.formatTabTitle(payload.host, tab);
-    //         browser.tabs.executeScript(tab.id, {
-    //           code: `document.title = "${title}";`
-    //         });
-    //       }
-    //     }
-    //   } catch (error) {
-    //     console.log(`LOG: error: `, error);
-    //   }
-    // },
-    formatTabTitle(hostObject, tabObject) {
-      let userTitle = hostObject.userTitle;
-      let defaultTabTitle = tabObject.title;
-      const formattedTitle = hostObject.isAppended
-        ? (defaultTabTitle += userTitle)
-        : userTitle;
-      return formattedTitle;
-    },
-    preventDocumentLoops(hostObject, tabObject) {
-      console.log(
-        `LOG: preventDocumentLoops -> hostObject, tabObject`,
-        hostObject,
-        tabObject
-      );
-      if (!hostObject || !hostObject.hostState) return;
-      if (
-        hostObject.isAppended &&
-        tabObject.title === `${hostObject.defaultTitle}${hostObject.userTitle}`
-      )
-        return;
-      if (
-        !hostObject.isAppended &&
-        tabObject.title === `${hostObject.userTitle}`
-      )
-        return;
-      if (
-        hostObject.isAppended &&
-        tabObject.title.includes(hostObject.userTitle)
-      )
-        return;
-
-      return true;
+      browser.runtime.sendMessage({
+        type: "updateTabs",
+        ...payload
+      });
     }
     // showEvent(event) {
     //   console.log(`LOG: showEvent -> event`, event);
