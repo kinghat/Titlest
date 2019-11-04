@@ -63,8 +63,10 @@ const state = {
 
 const getters = {
 	getHosts: (state) => state.hosts,
-	getHostIndexByHostName: (state) => (hostName) => state.hosts.findIndex((host) => host.hostName === hostName),
-	getHostByHostName: (state) => (hostName) => state.hosts.find((host) => host.hostName === hostName),
+	getHostIndexByHostName: (state) => (hostName) =>
+		state.hosts.findIndex((host) => host.hostName === hostName),
+	getHostByHostName: (state) => (hostName) =>
+		state.hosts.find((host) => host.hostName === hostName),
 };
 
 const actions = {

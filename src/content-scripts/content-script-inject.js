@@ -4,34 +4,46 @@
 import browser from "webextension-polyfill";
 // import App from "./App.vue";
 // import store from "../store";
-browser.runtime.sendMessage({ type: "contentScriptInjectInit", hostname: document.location.hostname, title: document.title }).then( response => {
-  if (response.type === "updateTitle") {
-    setTitle(response.title);
-    console.log(`contentScriptInjectInit response: `, response);
-  }
-});
+browser.runtime
+	.sendMessage({
+		type: "contentScriptInjectInit",
+		hostname: document.location.hostname,
+		title: document.title,
+	})
+	.then((response) => {
+		if (response.type === "updateTitle") {
+			setTitle(response.title);
+			console.log(`contentScriptInjectInit response: `, response);
+		}
+	});
 
 console.log("HOLA FROM INJECTED CONENT-SCRIPT");
 new MutationObserver(() => {
-  console.log("title in observer: ", document.title);
-  browser.runtime.sendMessage({ type: "contentScriptTitleMutation", hostname: document.location.hostname, title: document.title }).then( response => {
-    if (response.type === "updateTitle") {
-      console.log(`contentScriptTitleMutation response: `, response.title );
-      setTitle(response.title);
-    }
-  });
+	console.log("title in observer: ", document.title);
+	browser.runtime
+		.sendMessage({
+			type: "contentScriptTitleMutation",
+			hostname: document.location.hostname,
+			title: document.title,
+		})
+		.then((response) => {
+			if (response.type === "updateTitle") {
+				console.log(`contentScriptTitleMutation response: `, response.title);
+				setTitle(response.title);
+			}
+		});
 }).observe(document.querySelector("title"), {
-  childList: true,
+	childList: true,
 });
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  // if (message.type === "updateTitle") {
-  //   setTitle(message.title);
-  // }
-})
+	// if (message.type === "updateTitle") {
+	//   setTitle(message.title);
+	// }
+});
 
 function setTitle(title) {
-  document.title = title;
+	document.title = title;
 }
 
 // function clickPause() {
@@ -40,7 +52,7 @@ function setTitle(title) {
 // }
 
 // function runPauseFunction() {
-//   setTimeout(clickPause, 5000);  
+//   setTimeout(clickPause, 5000);
 // }
 
 // runPauseFunction();

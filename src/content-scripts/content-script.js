@@ -14,8 +14,13 @@ console.log("HOLA FROM CONTENT-SCRIPT!");
 window.addEventListener("DOMContentLoaded", sendInitMessage());
 window.removeEventListener("DOMContentLoaded", sendInitMessage);
 function sendInitMessage() {
-  browser.runtime.sendMessage({ type: "contentScriptInit", hostname: document.location.hostname, SENTFROM: document.location });
+	browser.runtime.sendMessage({
+		type: "contentScriptInit",
+		hostname: document.location.hostname,
+		SENTFROM: document.location,
+	});
 }
+
 // browser.runtime.sendMessage({ type: "contentScriptInit", hostname: document.location.hostname, SENTFROM: document.location });
 
 // function clickPause() {
@@ -24,7 +29,7 @@ function sendInitMessage() {
 // }
 
 // function runPauseFunction() {
-//   setTimeout(clickPause, 5000);  
+//   setTimeout(clickPause, 5000);
 // }
 
 // runPauseFunction();

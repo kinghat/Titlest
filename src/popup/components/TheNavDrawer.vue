@@ -1,5 +1,5 @@
 <template>
-  <v-navigation-drawer :value="drawer" @input="value => $emit('update:drawer', value)" app>
+  <v-navigation-drawer :value="drawer" @input="(value) => $emit('update:drawer', value)" app>
     <v-list-item>
       <v-list-item-avatar>
         <v-img src="https://randomuser.me/api/portraits/men/78.jpg"></v-img>
@@ -39,5 +39,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

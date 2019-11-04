@@ -108,7 +108,10 @@ async function setOriginalTabTitle(tab, host) {
 
 		await store.dispatch("hosts/setHostProperty", {
 			mutation: "SET_ORIGINAL_TAB_TITLE",
-			value: { ...originalTabTitles, [id]: originalTabTitle },
+			value: {
+				...originalTabTitles,
+				[id]: originalTabTitle,
+			},
 			host,
 		});
 		// await browser.sessions.setTabValue(tab.id, "originalTabTitle", originalTabTitle);

@@ -12,9 +12,15 @@
                   <v-chip
                     small
                     label
-                    :color="host.hostState && 'green accent-4' || ''"
+                    :color="
+											(host.hostState && 'green accent-4') || ''
+										"
                     text-color="white"
-                  >{{ host.hostState && "enabled" || "disabled" }}</v-chip>
+                  >
+                    {{
+                    (host.hostState && "enabled") || "disabled"
+                    }}
+                  </v-chip>
                 </v-flex>
               </v-layout>
             </v-fade-transition>
@@ -31,13 +37,19 @@
                   mode="aggressive"
                 >
                   <!-- <ValidationProvider
-                  ref="userTitleInput"
-                  :rules="{ required: false, regex: [ /^\S+(?: \S+)*$/, 'append' ] }"
-                  v-slot="{ errors, flags }"
+									ref="userTitleInput"
+									:rules="{ required: false, regex: [ /^\S+(?: \S+)*$/, 'append' ] }"
+									v-slot="{ errors, flags }"
                   >-->
                   <v-text-field
                     :value="host.userTitle"
-                    @input="hostPropertyHandler({mutation: 'SET_USER_TITLE', value: $event, host})"
+                    @input="
+											hostPropertyHandler({
+												mutation: 'SET_USER_TITLE',
+												value: $event,
+												host
+											})
+										"
                     placeholder="NO TITLE SET!"
                     single-line
                     outlined
@@ -50,7 +62,13 @@
                 <ValidationProvider name="append">
                   <v-radio-group
                     :value="host.isAppended"
-                    @change="hostPropertyHandler({mutation: 'SET_IS_APPENDED', value: $event, host})"
+                    @change="
+											hostPropertyHandler({
+												mutation: 'SET_IS_APPENDED',
+												value: $event,
+												host
+											})
+										"
                     row
                   >
                     <v-radio :value="true" label="append"></v-radio>
@@ -61,8 +79,16 @@
               <v-flex xs4>
                 <v-switch
                   v-model="host.hostState"
-                  @change="hostPropertyHandler({mutation: 'SET_HOST_STATE', value: $event, host})"
-                  :label="`${host.hostState && 'enabled' || 'disabled' }`"
+                  @change="
+										hostPropertyHandler({
+											mutation: 'SET_HOST_STATE',
+											value: $event,
+											host
+										})
+									"
+                  :label="
+										`${(host.hostState && 'enabled') || 'disabled'}`
+									"
                   color="green accent-4"
                 ></v-switch>
               </v-flex>
@@ -128,5 +154,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>
