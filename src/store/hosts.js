@@ -3,61 +3,61 @@ import * as types from "./mutation-types";
 
 const state = {
 	hosts: [
-		{
-			id: 0,
-			date: undefined,
-			hostState: false,
-			hostName: "www.google.com",
-			userTitle: " - Titlest",
-			defaultTitle: undefined,
-			originalTabTitles: {},
-			isAppended: true,
-			hostBindings: [],
-		},
-		{
-			id: 1,
-			date: undefined,
-			hostState: false,
-			hostName: "discordapp.com",
-			userTitle: " - Titlest",
-			defaultTitle: undefined,
-			originalTabTitles: {},
-			isAppended: false,
-			hostBindings: [],
-		},
-		{
-			id: 2,
-			date: undefined,
-			hostState: true,
-			hostName: "www.stackoverflow.com",
-			userTitle: " - Titlest",
-			defaultTitle: undefined,
-			originalTabTitles: {},
-			isAppended: true,
-			hostBindings: [],
-		},
-		{
-			id: 3,
-			date: undefined,
-			hostState: true,
-			hostName: "open.spotify.com",
-			userTitle: " - Titlest",
-			defaultTitle: undefined,
-			originalTabTitles: {},
-			isAppended: true,
-			hostBindings: [],
-		},
-		{
-			id: 4,
-			date: undefined,
-			hostState: true,
-			hostName: "www.github.com",
-			userTitle: " - Titlest",
-			defaultTitle: undefined,
-			originalTabTitles: {},
-			isAppended: true,
-			hostBindings: [],
-		},
+		// {
+		// 	id: 0,
+		// 	date: undefined,
+		// 	hostState: false,
+		// 	hostName: "www.google.com",
+		// 	userTitle: " - Titlest",
+		// 	defaultTitle: undefined,
+		// 	originalTabTitles: {},
+		// 	isAppended: true,
+		// 	hostBindings: [],
+		// },
+		// {
+		// 	id: 1,
+		// 	date: undefined,
+		// 	hostState: false,
+		// 	hostName: "discordapp.com",
+		// 	userTitle: " - Titlest",
+		// 	defaultTitle: undefined,
+		// 	originalTabTitles: {},
+		// 	isAppended: false,
+		// 	hostBindings: [],
+		// },
+		// {
+		// 	id: 2,
+		// 	date: undefined,
+		// 	hostState: true,
+		// 	hostName: "www.stackoverflow.com",
+		// 	userTitle: " - Titlest",
+		// 	defaultTitle: undefined,
+		// 	originalTabTitles: {},
+		// 	isAppended: true,
+		// 	hostBindings: [],
+		// },
+		// {
+		// 	id: 3,
+		// 	date: undefined,
+		// 	hostState: true,
+		// 	hostName: "open.spotify.com",
+		// 	userTitle: " - Titlest",
+		// 	defaultTitle: undefined,
+		// 	originalTabTitles: {},
+		// 	isAppended: true,
+		// 	hostBindings: [],
+		// },
+		// {
+		// 	id: 4,
+		// 	date: undefined,
+		// 	hostState: true,
+		// 	hostName: "www.github.com",
+		// 	userTitle: " - Titlest",
+		// 	defaultTitle: undefined,
+		// 	originalTabTitles: {},
+		// 	isAppended: true,
+		// 	hostBindings: [],
+		// },
 	],
 };
 
@@ -76,17 +76,23 @@ const actions = {
 		// action payload unnecessarily. if that property is here i return
 		// from the action. :shruggie:
 		if (payload.payload) return;
-
 		payload.index = getters.getHostIndexByHostName(payload.host.hostName);
-
-		console.log(`LOG: setHostProperty -> payload: `, payload);
-
+		console.log(`LOG: action => setHostProperty -> payload: `, payload);
 		commit(payload.mutation, payload);
+	},
+	setHosts({ commit, getters }, payload) {
+		console.log(`LOG: action => setHosts -> payload: `, payload);
+		commit("SET_HOSTS", payload);
 	},
 };
 
 const mutations = {
 	// ...make.mutations(state),
+	[types.SET_HOSTS](state, payload) {
+		console.log(`LOG: mutation => payload:`, payload);
+		state.hosts = [...payload];
+		console.log(`LOG: mutation => state.hosts: `, state.hosts);
+	},
 	[types.SET_USER_TITLE](state, payload) {
 		state.hosts[payload.index].userTitle = payload.value;
 	},
@@ -94,16 +100,12 @@ const mutations = {
 		state.hosts[payload.index].isAppended = payload.value;
 	},
 	[types.SET_HOST_STATE](state, payload) {
-		// console.log(`LOG: SET_HOST_STATE payload: `, payload);
+		console.log(`LOG: mutation => SET_HOST_STATE payload: `, payload);
 		state.hosts[payload.index].hostState = payload.value;
-		// console.log(`LOG: SET_HOST_STATE state: `, state);
-	},
-	[types.SET_DEFAULT_TITLE](state, payload) {
-		console.log(`LOG: SET_DEFAULT_TITLE payload: `, payload);
-		state.hosts[payload.index].defaultTitle = payload.value;
+		console.log(`LOG: mutation => SET_HOST_STATE state: `, state);
 	},
 	[types.SET_ORIGINAL_TAB_TITLE](state, payload) {
-		console.log(`LOG: SET_ORIGINAL_TAB_TITLE payload: `, payload);
+		console.log(`LOG: mutation => SET_ORIGINAL_TAB_TITLE payload: `, payload);
 		state.hosts[payload.index].originalTabTitles = { ...payload.value };
 	},
 };

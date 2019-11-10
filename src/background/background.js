@@ -25,10 +25,12 @@ store.subscribe((mutation, state) => {
 	if (mutation.type === "vweReplaceState") reloadInit();
 });
 
-// browser.runtime.onInstalled.addListener(subscribeToStorage);
+// browser.runtime.onInstalled.addListener(runSetup);
 // browser.runtime.onStartup.addListener(subscribeToStorage);
+browser.runtime.onSuspend.addListener(onSuspend());
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (message.type === "updateTabs") updateTabs(message);
+	if (message.type === "updateSavedTabs") reloadInit();
 });
 browser.tabs.onUpdated.addListener(handleUpdated);
 
@@ -39,6 +41,17 @@ browser.tabs.onUpdated.addListener(handleUpdated);
 //     console.log(`LOG: subscribeToStorage -> mutation:  `, mutation);
 //     if (mutation.type === "vweReplaceState") init();
 //   });}
+
+async function runSetup() {
+	const tabs = await browser.tabs.query({});
+	const hostNames = {};
+
+	for (const tab of tabs) {
+		const hostName = new URL(tab.url).hostname;
+		hostNames[hostName] = tab;
+		console.log(`LOG: runSetup -> hostNames: `, hostNames);
+	}
+}
 
 async function reloadInit() {
 	try {
@@ -74,6 +87,34 @@ async function reloadInit() {
 	}
 }
 
+async function onSuspend() {
+	try {
+		const tabs = await browser.tabs.query({});
+		// console.log(`LOG: realoadInit -> tabs: `, tabs);
+		// clearOriginalTabTitles(tabs);
+
+		for (const tab of tabs) {
+			const hostName = new URL(tab.url).hostname;
+			const host = store.getters["hosts/getHostByHostName"](hostName);
+
+			if (host && host.hostState) {
+				// console.log(`LOG: init -> tabObject: `, tabObject);
+				// console.log(`LOG: init -> host: BLAH`);
+				// const loopCheck = preventDocumentLoops(tab, host);
+				// console.log(`LOG: init -> loopCheck: `, loopCheck);
+				// if (loopCheck) {
+				// 	setTabTitle(tab, host);
+				// }
+				const originalTabTitle = getOriginalTabTitle(tab, host);
+				browser.tabs.executeScript(tab.id, {
+					code: `document.title = "${originalTabTitle}";`,
+				});
+			}
+		}
+	} catch (error) {
+		console.log(`LOG: error: `, error);
+	}
+}
 async function clearOriginalTabTitles(tabs) {
 	// console.log(`LOG: clearOriginalTabTitles -> tabs: `, tabs);
 	for (const tab of tabs) {
@@ -81,7 +122,10 @@ async function clearOriginalTabTitles(tabs) {
 		const hostName = new URL(tab.url).hostname;
 		const host = store.getters["hosts/getHostByHostName"](hostName);
 		if (host) {
-			console.log(`LOG: clearOriginalTabTitles -> host.hostName: `, host.hostName);
+			console.log(
+				`LOG: clearOriginalTabTitles -> host.hostName: `,
+				host.hostName,
+			);
 			const { title } = tab;
 			const { userTitle } = host;
 			if (title !== userTitle) {
@@ -104,7 +148,10 @@ async function setOriginalTabTitle(tab, host) {
 		const tabTitle = tab.title;
 		// console.log(`LOG: setOriginalTabTitle -> tabTitle: `, tabTitle);
 		const originalTabTitle = title.replace(`${userTitle}`, "");
-		console.log(`LOG: setOriginalTabTitle -> originalTabTitle: `, originalTabTitle);
+		console.log(
+			`LOG: setOriginalTabTitle -> originalTabTitle: `,
+			originalTabTitle,
+		);
 
 		await store.dispatch("hosts/setHostProperty", {
 			mutation: "SET_ORIGINAL_TAB_TITLE",
@@ -124,7 +171,10 @@ function getOriginalTabTitle(tab, host) {
 	// console.log(`LOG: getOriginalTabTitle -> tab.id: `, tab.id);
 	// const restoredTabTitle = await browser.sessions.getTabValue(tab.id, "originalTabTitle");
 	const originalTabTitle = host.originalTabTitles[tab.id];
-	console.log(`LOG: getOriginalTabTitle -> originalTabTitle: `, originalTabTitle);
+	console.log(
+		`LOG: getOriginalTabTitle -> originalTabTitle: `,
+		originalTabTitle,
+	);
 	return originalTabTitle;
 }
 
@@ -191,7 +241,8 @@ function formatTabTitle(tab, host) {
 	const originalTabTitle = getOriginalTabTitle(tab, host);
 	console.log(`LOG: formatTabTitle -> originalTabTitle: `, originalTabTitle);
 	let formattedTitle;
-	if (hostState) formattedTitle = isAppended ? originalTabTitle + userTitle : userTitle;
+	if (hostState)
+		formattedTitle = isAppended ? originalTabTitle + userTitle : userTitle;
 	if (!hostState) formattedTitle = originalTabTitle;
 	console.log(`LOG: formatTabTitle -> formattedTitle: `, formattedTitle);
 	return formattedTitle;
@@ -205,7 +256,8 @@ function preventDocumentLoops(tab, host) {
 	const { title, id } = tab;
 	console.log(`LOG: preventDocumentLoops -> preventDocumentLoops`);
 	if (hostState) {
-		if (isAppended && title === `${originalTabTitles[id]}${userTitle}`) return;
+		if (isAppended && title === `${originalTabTitles[id]}${userTitle}`)
+			return;
 		if (!isAppended && title === userTitle) return;
 	}
 	// if (isAppended && title.includes(userTitle)) return;
