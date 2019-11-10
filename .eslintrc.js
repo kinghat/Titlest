@@ -1,20 +1,14 @@
 module.exports = {
+	root: true,
 	env: {
 		node: true,
 		browser: true,
-		es6: true,
 	},
-	extends: ["@vue/airbnb", "airbnb-base", "plugin:vue/essential", "plugin:prettier/recommended"],
-	// globals: {
-	// 	Atomics: "readonly",
-	// 	SharedArrayBuffer: "readonly",
-	// },
+	extends: ["plugin:vue/essential", "@vue/airbnb", "plugin:prettier/recommended"],
 	parserOptions: {
 		parser: "babel-eslint",
-		ecmaVersion: 2020,
-		sourceType: "module",
 	},
-	plugins: ["vue"],
+	// plugins: ["vue"],
 	rules: {
 		"no-console": process.env.NODE_ENV === "production" ? "error" : "off",
 		"no-debugger": process.env.NODE_ENV === "production" ? "error" : "off",
@@ -35,7 +29,7 @@ module.exports = {
 			{
 				arrowParens: "always",
 				bracketSpacing: true,
-				printWidth: 100,
+				printWidth: 80,
 				semi: true,
 				tabWidth: 3,
 				trailingComma: "all",
