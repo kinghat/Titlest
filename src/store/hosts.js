@@ -1,4 +1,4 @@
-// import { make } from "vuex-pathify";
+/* eslint-disable no-shadow */
 import * as types from "./mutation-types";
 
 const state = {
@@ -87,7 +87,6 @@ const actions = {
 };
 
 const mutations = {
-	// ...make.mutations(state),
 	[types.SET_HOSTS](state, payload) {
 		console.log(`LOG: mutation => payload:`, payload);
 		state.hosts = [...payload];
