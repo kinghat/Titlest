@@ -7,26 +7,24 @@
       <span>itlest</span>
     </v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-btn icon>
+    <v-btn icon @click="settingsDialog = true">
       <v-icon>mdi-settings</v-icon>
     </v-btn>
-    <v-btn icon>
-      <v-icon>mdi-dots-vertical</v-icon>
-    </v-btn>
+    <TheSettingsDialog v-model="settingsDialog" @setDialogValue="settingsDialog = $event" />
   </v-app-bar>
-  <!-- <TheNavDrawer :drawer.sync="drawer" /> -->
 </template>
 <script>
-import TheNavDrawer from "./TheNavDrawer.vue";
+import browser from "webextension-polyfill";
+import TheSettingsDialog from "./TheSettingsDialog";
 
 export default {
   name: "TheAppBar",
-  // components: {
-  //   TheNavDrawer
-  // },
+  components: {
+    TheSettingsDialog
+  },
   data() {
     return {
-      drawer: false
+      settingsDialog: false
     };
   }
 };

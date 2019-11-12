@@ -27,7 +27,7 @@ store.subscribe((mutation, state) => {
 
 // browser.runtime.onInstalled.addListener(runSetup);
 // browser.runtime.onStartup.addListener(subscribeToStorage);
-browser.runtime.onSuspend.addListener(onSuspend());
+// browser.runtime.onSuspend.addListener(onSuspend());
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (message.type === "updateTabs") updateTabs(message);
 	if (message.type === "updateSavedTabs") reloadInit();
@@ -87,34 +87,34 @@ async function reloadInit() {
 	}
 }
 
-async function onSuspend() {
-	try {
-		const tabs = await browser.tabs.query({});
-		// console.log(`LOG: realoadInit -> tabs: `, tabs);
-		// clearOriginalTabTitles(tabs);
+// async function onSuspend() {
+// 	try {
+// 		const tabs = await browser.tabs.query({});
+// 		// console.log(`LOG: realoadInit -> tabs: `, tabs);
+// 		// clearOriginalTabTitles(tabs);
 
-		for (const tab of tabs) {
-			const hostName = new URL(tab.url).hostname;
-			const host = store.getters["hosts/getHostByHostName"](hostName);
+// 		for (const tab of tabs) {
+// 			const hostName = new URL(tab.url).hostname;
+// 			const host = store.getters["hosts/getHostByHostName"](hostName);
 
-			if (host && host.hostState) {
-				// console.log(`LOG: init -> tabObject: `, tabObject);
-				// console.log(`LOG: init -> host: BLAH`);
-				// const loopCheck = preventDocumentLoops(tab, host);
-				// console.log(`LOG: init -> loopCheck: `, loopCheck);
-				// if (loopCheck) {
-				// 	setTabTitle(tab, host);
-				// }
-				const originalTabTitle = getOriginalTabTitle(tab, host);
-				browser.tabs.executeScript(tab.id, {
-					code: `document.title = "${originalTabTitle}";`,
-				});
-			}
-		}
-	} catch (error) {
-		console.log(`LOG: error: `, error);
-	}
-}
+// 			if (host && host.hostState) {
+// 				// console.log(`LOG: init -> tabObject: `, tabObject);
+// 				// console.log(`LOG: init -> host: BLAH`);
+// 				// const loopCheck = preventDocumentLoops(tab, host);
+// 				// console.log(`LOG: init -> loopCheck: `, loopCheck);
+// 				// if (loopCheck) {
+// 				// 	setTabTitle(tab, host);
+// 				// }
+// 				const originalTabTitle = getOriginalTabTitle(tab, host);
+// 				browser.tabs.executeScript(tab.id, {
+// 					code: `document.title = "${originalTabTitle}";`,
+// 				});
+// 			}
+// 		}
+// 	} catch (error) {
+// 		console.log(`LOG: error: `, error);
+// 	}
+// }
 async function clearOriginalTabTitles(tabs) {
 	// console.log(`LOG: clearOriginalTabTitles -> tabs: `, tabs);
 	for (const tab of tabs) {

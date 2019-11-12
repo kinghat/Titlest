@@ -75,7 +75,7 @@
               </v-radio-group>
             </ValidationProvider>
             <v-switch
-              v-model="host.hostState"
+              :input-value="host.hostState"
               @change="
 										hostPropertyHandler({
 											mutation: 'SET_HOST_STATE',

@@ -28,7 +28,6 @@ export default {
   data() {
     return {
       setupDialog: false
-      // setupDialog: Object.keys(this.hosts).length
     };
   },
   computed: {
@@ -41,17 +40,12 @@ export default {
     setSetupDialog: function() {
       this.setupDialog = Object.keys(this.hosts).length === 0;
     }
-    // logHosts: function() {
-    //   console.log(`LOG: this.hosts: `, this.hosts);
-    // }
   },
   mounted() {},
   beforeCreate() {
     store.subscribe((mutation, state) => {
       if (mutation.type === "vweReplaceState") {
-        // console.log(`LOG: beforeCreate -> mutation.type: `, mutation.type);
         this.setSetupDialog();
-        // this.logHosts();
       }
     });
   }
