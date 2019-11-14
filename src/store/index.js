@@ -15,7 +15,7 @@ export default new Vuex.Store({
 	},
 	plugins: [
 		VuexWebExtensions({
-			persistentStates: ["options", "hosts"],
+			persistentStates: ["globals", "hosts"],
 			syncActions: false,
 			loggerLevel: "debug",
 		}),
