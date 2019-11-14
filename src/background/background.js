@@ -30,51 +30,25 @@ store.subscribe((mutation, state) => {
 // browser.runtime.onSuspend.addListener(onSuspend());
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (message.type === "updateTabs") updateTabs(message);
+	if (message.type === "setTabsToGlobalState") setTabsToGlobalState();
 	if (message.type === "updateSavedTabs") reloadInit();
 });
 browser.tabs.onUpdated.addListener(handleUpdated);
 
-// subscribeToStorage();
-
-// function subscribeToStorage() {
-//   store.subscribe((mutation, state) => {
-//     console.log(`LOG: subscribeToStorage -> mutation:  `, mutation);
-//     if (mutation.type === "vweReplaceState") init();
-//   });}
-
-async function runSetup() {
-	const tabs = await browser.tabs.query({});
-	const hostNames = {};
-
-	for (const tab of tabs) {
-		const hostName = new URL(tab.url).hostname;
-		hostNames[hostName] = tab;
-		console.log(`LOG: runSetup -> hostNames: `, hostNames);
-	}
-}
-
 async function reloadInit() {
 	try {
 		const tabs = await browser.tabs.query({});
-		// console.log(`LOG: realoadInit -> tabs: `, tabs);
+
 		clearOriginalTabTitles(tabs);
 
 		for (const tab of tabs) {
 			const hostName = new URL(tab.url).hostname;
-			// console.log(`LOG: getHostName -> hostName: `, hostName);
 			const host = store.getters["hosts/getHostByHostName"](hostName);
-			// console.log(`LOG: reloadInit -> host: `, host);
-			// console.log(`LOG: init -> host awaited: `, JSON.stringify(host));
 
 			if (host) {
-				// console.log(`LOG: init -> host: `, host);
-				// clearOriginalTabTitle(tab, host);
 				setOriginalTabTitle(tab, host);
 			}
-			// console.log(`LOG: init -> host: `, host);
 			if (host && host.hostState) {
-				// console.log(`LOG: init -> tabObject: `, tabObject);
-				// console.log(`LOG: init -> host: BLAH`);
 				const loopCheck = preventDocumentLoops(tab, host);
 				console.log(`LOG: init -> loopCheck: `, loopCheck);
 				if (loopCheck) {
@@ -87,47 +61,36 @@ async function reloadInit() {
 	}
 }
 
-// async function onSuspend() {
-// 	try {
-// 		const tabs = await browser.tabs.query({});
-// 		// console.log(`LOG: realoadInit -> tabs: `, tabs);
-// 		// clearOriginalTabTitles(tabs);
+async function setTabsToGlobalState() {
+	try {
+		const tabs = await browser.tabs.query({});
 
-// 		for (const tab of tabs) {
-// 			const hostName = new URL(tab.url).hostname;
-// 			const host = store.getters["hosts/getHostByHostName"](hostName);
+		for (const tab of tabs) {
+			const hostName = new URL(tab.url).hostname;
+			const host = store.getters["hosts/getHostByHostName"](hostName);
 
-// 			if (host && host.hostState) {
-// 				// console.log(`LOG: init -> tabObject: `, tabObject);
-// 				// console.log(`LOG: init -> host: BLAH`);
-// 				// const loopCheck = preventDocumentLoops(tab, host);
-// 				// console.log(`LOG: init -> loopCheck: `, loopCheck);
-// 				// if (loopCheck) {
-// 				// 	setTabTitle(tab, host);
-// 				// }
-// 				const originalTabTitle = getOriginalTabTitle(tab, host);
-// 				browser.tabs.executeScript(tab.id, {
-// 					code: `document.title = "${originalTabTitle}";`,
-// 				});
-// 			}
-// 		}
-// 	} catch (error) {
-// 		console.log(`LOG: error: `, error);
-// 	}
-// }
+			if (host && host.hostState) {
+				const title = await formatTabTitle(tab, host);
+				browser.tabs.executeScript(tab.id, {
+					code: `document.title = "${title}";`,
+				});
+				// setTabTitle(tab, host);
+			}
+		}
+	} catch (error) {
+		console.log(`LOG: error: `, error);
+	}
+}
+
 async function clearOriginalTabTitles(tabs) {
-	// console.log(`LOG: clearOriginalTabTitles -> tabs: `, tabs);
 	for (const tab of tabs) {
-		// console.log(`LOG: clearOriginalTabTitles -> tab: `, tab);
 		const hostName = new URL(tab.url).hostname;
 		const host = store.getters["hosts/getHostByHostName"](hostName);
+
 		if (host) {
-			console.log(
-				`LOG: clearOriginalTabTitles -> host.hostName: `,
-				host.hostName,
-			);
 			const { title } = tab;
 			const { userTitle } = host;
+
 			if (title !== userTitle) {
 				store.dispatch("hosts/setHostProperty", {
 					mutation: "SET_ORIGINAL_TAB_TITLE",
@@ -141,17 +104,9 @@ async function clearOriginalTabTitles(tabs) {
 
 async function setOriginalTabTitle(tab, host) {
 	if (tab.title !== host.userTitle) {
-		// console.log(`LOG: setOriginalTabTitle -> tab.id: `, tab.id);
-		// console.log(`LOG: setOriginalTabTitle -> host.hostName: `, host.hostName);
 		const { title, id } = tab;
 		const { userTitle, originalTabTitles } = host;
-		const tabTitle = tab.title;
-		// console.log(`LOG: setOriginalTabTitle -> tabTitle: `, tabTitle);
 		const originalTabTitle = title.replace(`${userTitle}`, "");
-		console.log(
-			`LOG: setOriginalTabTitle -> originalTabTitle: `,
-			originalTabTitle,
-		);
 
 		await store.dispatch("hosts/setHostProperty", {
 			mutation: "SET_ORIGINAL_TAB_TITLE",
@@ -161,38 +116,23 @@ async function setOriginalTabTitle(tab, host) {
 			},
 			host,
 		});
-		// await browser.sessions.setTabValue(tab.id, "originalTabTitle", originalTabTitle);
-		// const returnedOriginalTabTitle = getOriginalTabTitle(tab);
-		// console.log(`LOG: setOriginalTabTitle -> returnedOriginalTabTitle: `, returnedOriginalTabTitle);
 	}
 }
 
 function getOriginalTabTitle(tab, host) {
-	// console.log(`LOG: getOriginalTabTitle -> tab.id: `, tab.id);
-	// const restoredTabTitle = await browser.sessions.getTabValue(tab.id, "originalTabTitle");
 	const originalTabTitle = host.originalTabTitles[tab.id];
-	console.log(
-		`LOG: getOriginalTabTitle -> originalTabTitle: `,
-		originalTabTitle,
-	);
 	return originalTabTitle;
 }
 
 async function updateTabs(payload) {
-	console.log(`LOG: updateTabs WAS CALLED!`);
-	console.log(`LOG: updateTabs -> payload: `, payload);
-	const { host } = payload;
 	try {
-		// debugger;
-		// if (!payload.host.hostState) return;
+		const { host } = payload;
 		const tabs = await browser.tabs.query({
 			url: `*://${payload.host.hostName}/*`,
 		});
-		console.log(`LOG: updateTabs -> tabs: `, tabs);
 
 		for (const tab of tabs) {
 			const loopCheck = preventDocumentLoops(tab, host);
-			console.log(`LOG: updateTabs -> loopCheck`, loopCheck);
 			if (loopCheck) {
 				setTabTitle(tab, host);
 			}
@@ -204,18 +144,19 @@ async function updateTabs(payload) {
 
 async function handleUpdated(tabId, changeInfo, tabInfo) {
 	if (changeInfo.title) {
-		// console.log(`LOG: handleUpdated -> tabInfo(1): `, tabInfo);
 		const hostName = new URL(tabInfo.url).hostname;
 		const host = store.getters["hosts/getHostByHostName"](hostName);
+
 		if (!host) return;
+
 		setOriginalTabTitle(tabInfo, host);
+
 		const loopCheck = preventDocumentLoops(tabInfo, host);
-		if (host.hostState && loopCheck) {
-			// console.log(`LOG: handleUpdated -> host.isAppended`, host.isAppended);
-			// console.log(`LOG: handleUpdated -> host`, host);
-			const title = formatTabTitle(tabInfo, host);
-			console.log(`LOG: handleUpdated -> title:`, title);
-			// console.log(`LOG: handleUpdated -> tabInfo(2): `, tabInfo);
+		const globalState = await getGlobalState();
+
+		if (host.hostState && loopCheck && globalState) {
+			const title = await formatTabTitle(tabInfo, host);
+
 			browser.tabs.executeScript(tabId, {
 				code: `document.title = "${title}";`,
 			});
@@ -223,45 +164,53 @@ async function handleUpdated(tabId, changeInfo, tabInfo) {
 	}
 }
 
-function setTabTitle(tab, host) {
-	const title = formatTabTitle(tab, host);
-	console.log(`LOG: setTabTitle -> title: `, title);
-	browser.tabs.executeScript(tab.id, {
-		code: `document.title = "${title}";`,
-	});
+async function setTabTitle(tab, host) {
+	const title = await formatTabTitle(tab, host);
+	const globalState = await getGlobalState();
+
+	if (globalState) {
+		browser.tabs.executeScript(tab.id, {
+			code: `document.title = "${title}";`,
+		});
+	}
 }
 
-function formatTabTitle(tab, host) {
-	console.log(`LOG: formatTabTitle -> host.hostName: `, host.hostName);
-	console.log(`LOG: formatTabTitle -> tab.id: `, tab.id);
+async function formatTabTitle(tab, host) {
 	const { userTitle, isAppended, originalTabTitles, hostState } = host;
-	console.log(`LOG: formatTabTitle -> originalTabTitles: `, originalTabTitles);
-	// console.log(`LOG: formatTabTitle -> userTitle`, userTitle);
-	// const tabTitle = tab.title;
 	const originalTabTitle = getOriginalTabTitle(tab, host);
-	console.log(`LOG: formatTabTitle -> originalTabTitle: `, originalTabTitle);
+	const globalState = await getGlobalState();
 	let formattedTitle;
+
 	if (hostState)
 		formattedTitle = isAppended ? originalTabTitle + userTitle : userTitle;
-	if (!hostState) formattedTitle = originalTabTitle;
-	console.log(`LOG: formatTabTitle -> formattedTitle: `, formattedTitle);
+	if (!hostState || !globalState) formattedTitle = originalTabTitle;
+
 	return formattedTitle;
 }
 
 function preventDocumentLoops(tab, host) {
-	// console.log(`LOG: preventDocumentLoops -> preventDocumentLoops1: `);
-	// debugger;
 	if (!host) return;
+
 	const { isAppended, originalTabTitles, userTitle, hostState } = host;
 	const { title, id } = tab;
-	console.log(`LOG: preventDocumentLoops -> preventDocumentLoops`);
+
 	if (hostState) {
 		if (isAppended && title === `${originalTabTitles[id]}${userTitle}`)
 			return;
 		if (!isAppended && title === userTitle) return;
 	}
-	// if (isAppended && title.includes(userTitle)) return;
+
 	return true;
+}
+
+async function getGlobalState() {
+	try {
+		const state = await store.state.globals.options.globalState;
+
+		return state;
+	} catch (error) {
+		console.log(`LOG: getGlobalState -> error: `, error);
+	}
 }
 
 // browser.runtime.onMessage.addListener(async (msg, sender) => {

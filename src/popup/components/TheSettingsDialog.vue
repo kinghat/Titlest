@@ -49,6 +49,9 @@ export default {
       },
       set(value) {
         this.$store.commit("globals/SET_GLOBAL_STATE", value);
+        browser.runtime.sendMessage({
+          type: "setTabsToGlobalState"
+        });
       }
     },
     notifications: {
