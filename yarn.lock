@@ -861,7 +861,7 @@
     "@types/source-list-map" "*"
     source-map "^0.6.1"
 
-"@types/webpack@^4.39.5":
+"@types/webpack@^4.39.8":
   version "4.39.8"
   resolved "https://registry.yarnpkg.com/@types/webpack/-/webpack-4.39.8.tgz#8083a4eb850ea02961ef6161465434c9b478851f"
   integrity sha512-lkJvwNJQUPW2SbVwAZW9s9whJp02nzLf2yTNwMULa4LloED9MYS1aNnGeoBCifpAI1pEBkTpLhuyRmBnLEOZAA==
@@ -8586,15 +8586,16 @@ webpack-dev-server@^3.8.2:
     ws "^6.2.1"
     yargs "12.0.5"
 
-webpack-extension-reloader@1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/webpack-extension-reloader/-/webpack-extension-reloader-1.1.2.tgz#ae15512f36da6c0eb609c0076c5b122fc2cd43ad"
-  integrity sha512-Bp3uGL//lvHU/WL0IpLdTpGJlb5ycJNeTg8OqlwXNEcXxX65HJCC4mNShrjAfs9soleKd2qxnMQMhaZWVgNTJg==
+webpack-extension-reloader@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/webpack-extension-reloader/-/webpack-extension-reloader-1.1.4.tgz#f5e5fa580e617c114cc45ddb6eb25c5d6a4dd2f6"
+  integrity sha512-PyssJvAiKhztc//QmhpU8yfg7LBR7Bn/cjSM7jadfQJPIDNN1Djxc+SJQRk8uHQ3GQbyWhsWu2DLCMBRcWHIPA==
   dependencies:
-    "@types/webpack" "^4.39.5"
+    "@types/webpack" "^4.39.8"
     "@types/webpack-sources" "^0.1.5"
     colors "^1.4.0"
     lodash "^4.17.15"
+    minimist "^1.2.0"
     useragent "^2.3.0"
     webextension-polyfill "^0.5.0"
     webpack-sources "^1.4.3"
