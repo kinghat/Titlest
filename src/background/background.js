@@ -1,38 +1,27 @@
 import browser from "webextension-polyfill";
-// import Vue from "vue";
-// import App from "./App.vue";
 import store from "../store";
-// import { createHost } from "./models/Host";
-
-/* eslint-disable no-new */
-// new Vue({
-//   store,
-//   render: h => h(App),
-// }).$mount("#app");
 
 /* clear persisted context menus: https://stackoverflow.com/a/38204762/934239
 create the right click context menu item */
-/* browser.contextMenus.removeAll(() => {
-  browser.contextMenus.create({
-    title: "change/append title (Alt+Shift+N)",
-    id: "addSite",
-    type: "normal",
-    contexts: ["page"],
-  });
-}); */
+browser.contextMenus.removeAll(() => {
+	browser.contextMenus.create({
+		title: "change/append title (Alt+Shift+N)",
+		id: "addSite",
+		type: "normal",
+		contexts: ["page"],
+	});
+});
 
 store.subscribe((mutation, state) => {
 	if (mutation.type === "vweReplaceState") reloadInit();
 });
 
-// browser.runtime.onInstalled.addListener(runSetup);
-// browser.runtime.onStartup.addListener(subscribeToStorage);
-// browser.runtime.onSuspend.addListener(onSuspend());
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (message.type === "updateTabs") updateTabs(message);
 	if (message.type === "setTabsToGlobalState") setTabsToGlobalState();
 	if (message.type === "updateSavedTabs") reloadInit();
 });
+
 browser.tabs.onUpdated.addListener(handleUpdated);
 
 async function reloadInit() {
@@ -57,7 +46,7 @@ async function reloadInit() {
 			}
 		}
 	} catch (error) {
-		console.log(`LOG: error: `, error);
+		console.log(`LOG: reloadInit -> error: `, error);
 	}
 }
 
@@ -78,44 +67,52 @@ async function setTabsToGlobalState() {
 			}
 		}
 	} catch (error) {
-		console.log(`LOG: error: `, error);
+		console.log(`LOG: setTabsToGlobalState -> error: `, error);
 	}
 }
 
 async function clearOriginalTabTitles(tabs) {
-	for (const tab of tabs) {
-		const hostName = new URL(tab.url).hostname;
-		const host = store.getters["hosts/getHostByHostName"](hostName);
+	try {
+		for (const tab of tabs) {
+			const hostName = new URL(tab.url).hostname;
+			const host = store.getters["hosts/getHostByHostName"](hostName);
 
-		if (host) {
-			const { title } = tab;
-			const { userTitle } = host;
+			if (host) {
+				const { title } = tab;
+				const { userTitle } = host;
 
-			if (title !== userTitle) {
-				store.dispatch("hosts/setHostProperty", {
-					mutation: "SET_ORIGINAL_TAB_TITLE",
-					value: {},
-					host,
-				});
+				if (title !== userTitle) {
+					store.dispatch("hosts/setHostProperty", {
+						mutation: "SET_ORIGINAL_TAB_TITLE",
+						value: {},
+						host,
+					});
+				}
 			}
 		}
+	} catch (error) {
+		console.log(`LOG: clearOriginalTabTitles -> error: `, error);
 	}
 }
 
 async function setOriginalTabTitle(tab, host) {
-	if (tab.title !== host.userTitle) {
-		const { title, id } = tab;
-		const { userTitle, originalTabTitles } = host;
-		const originalTabTitle = title.replace(`${userTitle}`, "");
+	try {
+		if (tab.title !== host.userTitle) {
+			const { title, id } = tab;
+			const { userTitle, originalTabTitles } = host;
+			const originalTabTitle = title.replace(`${userTitle}`, "");
 
-		await store.dispatch("hosts/setHostProperty", {
-			mutation: "SET_ORIGINAL_TAB_TITLE",
-			value: {
-				...originalTabTitles,
-				[id]: originalTabTitle,
-			},
-			host,
-		});
+			await store.dispatch("hosts/setHostProperty", {
+				mutation: "SET_ORIGINAL_TAB_TITLE",
+				value: {
+					...originalTabTitles,
+					[id]: originalTabTitle,
+				},
+				host,
+			});
+		}
+	} catch (error) {
+		console.log(`LOG: setOriginalTabTitle -> error: `, error);
 	}
 }
 
@@ -138,54 +135,66 @@ async function updateTabs(payload) {
 			}
 		}
 	} catch (error) {
-		console.log(`LOG: error: `, error);
+		console.log(`LOG: updateTabs -> error: `, error);
 	}
 }
 
 async function handleUpdated(tabId, changeInfo, tabInfo) {
-	if (changeInfo.title) {
-		const hostName = new URL(tabInfo.url).hostname;
-		const host = store.getters["hosts/getHostByHostName"](hostName);
+	try {
+		if (changeInfo.title) {
+			const hostName = new URL(tabInfo.url).hostname;
+			const host = store.getters["hosts/getHostByHostName"](hostName);
 
-		if (!host) return;
+			if (!host) return;
 
-		setOriginalTabTitle(tabInfo, host);
+			setOriginalTabTitle(tabInfo, host);
 
-		const loopCheck = preventDocumentLoops(tabInfo, host);
-		const globalState = await getGlobalState();
+			const loopCheck = preventDocumentLoops(tabInfo, host);
+			const globalState = await getGlobalState();
 
-		if (host.hostState && loopCheck && globalState) {
-			const title = await formatTabTitle(tabInfo, host);
+			if (host.hostState && loopCheck && globalState) {
+				const title = await formatTabTitle(tabInfo, host);
 
-			browser.tabs.executeScript(tabId, {
-				code: `document.title = "${title}";`,
-			});
+				browser.tabs.executeScript(tabId, {
+					code: `document.title = "${title}";`,
+				});
+			}
 		}
+	} catch (error) {
+		console.log(`LOG: handleUpdated -> error: `, error);
 	}
 }
 
 async function setTabTitle(tab, host) {
-	const title = await formatTabTitle(tab, host);
-	const globalState = await getGlobalState();
+	try {
+		const title = await formatTabTitle(tab, host);
+		const globalState = await getGlobalState();
 
-	if (globalState) {
-		browser.tabs.executeScript(tab.id, {
-			code: `document.title = "${title}";`,
-		});
+		if (globalState) {
+			browser.tabs.executeScript(tab.id, {
+				code: `document.title = "${title}";`,
+			});
+		}
+	} catch (error) {
+		console.log(`LOG: setTabTitle -> error: `, error);
 	}
 }
 
 async function formatTabTitle(tab, host) {
-	const { userTitle, isAppended, originalTabTitles, hostState } = host;
-	const originalTabTitle = getOriginalTabTitle(tab, host);
-	const globalState = await getGlobalState();
-	let formattedTitle;
+	try {
+		const { userTitle, isAppended, originalTabTitles, hostState } = host;
+		const originalTabTitle = getOriginalTabTitle(tab, host);
+		const globalState = await getGlobalState();
+		let formattedTitle;
 
-	if (hostState)
-		formattedTitle = isAppended ? originalTabTitle + userTitle : userTitle;
-	if (!hostState || !globalState) formattedTitle = originalTabTitle;
+		if (hostState)
+			formattedTitle = isAppended ? originalTabTitle + userTitle : userTitle;
+		if (!hostState || !globalState) formattedTitle = originalTabTitle;
 
-	return formattedTitle;
+		return formattedTitle;
+	} catch (error) {
+		console.log(`LOG: formatTabTitle -> error: `, error);
+	}
 }
 
 function preventDocumentLoops(tab, host) {
