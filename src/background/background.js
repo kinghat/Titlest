@@ -6,7 +6,7 @@ create the right click context menu item */
 browser.contextMenus.removeAll(() => {
 	browser.contextMenus.create({
 		title: "change/append title (Alt+Shift+N)",
-		id: "addSite",
+		id: "addHost",
 		type: "normal",
 		contexts: ["page"],
 	});
