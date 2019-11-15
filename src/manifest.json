@@ -42,10 +42,9 @@
 	],
 	"content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
 	"commands": {
-		"add-site": {
+		"add-host": {
 			"suggested_key": {
-				"default": "Alt+Shift+N",
-				"mac": "Command+Shift+N"
+				"default": "Alt+Shift+H"
 			},
 			"description": "Add host to Titlest"
 		}
