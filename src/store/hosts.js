@@ -84,13 +84,22 @@ const actions = {
 		console.log(`LOG: action => setHosts -> payload: `, payload);
 		commit("SET_HOSTS", payload);
 	},
+	setHost({ commit, getters }, payload) {
+		console.log(`LOG: action => setHost -> payload: `, payload);
+		commit("SET_HOST", payload);
+	},
 };
 
 const mutations = {
+	[types.SET_HOST](state, payload) {
+		console.log(`LOG: SET_HOST => payload:`, payload);
+		state.hosts.push(payload);
+		console.log(`LOG: SET_HOST => state.host: `, state.host);
+	},
 	[types.SET_HOSTS](state, payload) {
-		console.log(`LOG: mutation => payload:`, payload);
+		console.log(`LOG: SET_HOSTS => payload:`, payload);
 		state.hosts = [...payload];
-		console.log(`LOG: mutation => state.hosts: `, state.hosts);
+		console.log(`LOG: SET_HOSTS => state.hosts: `, state.hosts);
 	},
 	[types.SET_USER_TITLE](state, payload) {
 		state.hosts[payload.index].userTitle = payload.value;

@@ -1,15 +1,41 @@
 import browser from "webextension-polyfill";
 import store from "../store";
 
+// https://github.com/mozilla/webextension-polyfill/issues/74#issuecomment-406289372
+browser.menus = browser.menus || browser.contextMenus;
 /* clear persisted context menus: https://stackoverflow.com/a/38204762/934239
 create the right click context menu item */
-browser.contextMenus.removeAll(() => {
-	browser.contextMenus.create({
-		title: "change/append title (Alt+Shift+N)",
-		id: "addHost",
-		type: "normal",
-		contexts: ["page"],
-	});
+browser.menus.removeAll();
+browser.menus.create({
+	id: "test",
+	title: "add host to list",
+	contexts: ["page"],
+});
+// browser.contextMenus.removeAll(() => {
+// 	browser.contextMenus.create({
+// 		title: "change/append title (Alt+Shift+N)",
+// 		id: "addHost",
+// 		type: "normal",
+// 		contexts: ["page"],
+// 	});
+// });
+
+// listeners for action context menu or keyboard shorcut
+browser.commands.onCommand.addListener(async (command) => {
+	try {
+		if (command === "add-host") {
+			const tab = await browser.tabs.query({
+				currentWindow: true,
+				active: true,
+			});
+			setHost(tab[0]);
+		}
+	} catch (error) {
+		console.log(`LOG: command -> error: `, error);
+	}
+});
+browser.menus.onClicked.addListener((info, tab) => {
+	setHost(tab);
 });
 
 store.subscribe((mutation, state) => {
@@ -222,6 +248,30 @@ async function getGlobalState() {
 	}
 }
 
+async function setHost(tab) {
+	try {
+		const hostName = new URL(tab.url).hostname;
+		const host = store.getters["hosts/getHostByHostName"](hostName);
+		if (!host) {
+			const hostObject = {
+				id: tab.id,
+				date: undefined,
+				hostState: true,
+				hostName,
+				userTitle: " - Titlest",
+				originalTabTitles: {},
+				isAppended: true,
+				hostBindings: [],
+			};
+
+			await store.dispatch("hosts/setHost", hostObject);
+			reloadInit();
+		}
+	} catch {
+		(error) => console.log(`LOG: setHost -> error: `, error);
+	}
+}
+
 // browser.runtime.onMessage.addListener(async (msg, sender) => {
 //   console.log("BG page received message", msg, "from", sender);
 //   // console.log("Stored data", await browser.storage.local.get());
@@ -233,11 +283,6 @@ async function getGlobalState() {
 //   },
 //   { url: [{ hostEquals: document.location.hostname.toString }] },
 // );
-
-// listeners for action context menu or keyboard shorcut
-// browser.commands.onCommand.addListener(sendHostToStorage);
-// browser.contextMenus.onClicked.addListener(sendHostToStorage);
-// browser.contextMenus.onClicked.addListener(getTabHostName);
 
 /* browser.browserAction.onClicked.addListener(function(tab) {
   console.log(`Hello ${store.getters.foo}!`);
