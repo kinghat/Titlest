@@ -1,12 +1,28 @@
 <template>
   <v-app>
-    <TheSetupDialog v-model="setupDialog" @setDialogValue="setupDialog = $event" />
+    <TheSetupDialog
+      v-model="setupDialog"
+      @setDialogValue="setupDialog = $event"
+      @setSavedSnackbarValue="savedSnackbar = $event"
+    />
     <TheAppBar />
     <v-content>
       <v-container>
         <TheList />
       </v-container>
     </v-content>
+    <v-snackbar v-model="savedSnackbar" color="success" :timeout="5000">
+      {{ savedSnackbarText }}
+      <v-btn text icon @click="savedSnackbar = false">
+        <v-icon>mdi-close-outline</v-icon>
+      </v-btn>
+    </v-snackbar>
+    <v-snackbar v-model="removedSnackbar" color="success" :timeout="5000">
+      {{ removedSnackbarText }}
+      <v-btn text icon @click="removedSnackbar = false">
+        <v-icon>mdi-close-outline</v-icon>
+      </v-btn>
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -27,7 +43,11 @@ export default {
   },
   data() {
     return {
-      setupDialog: false
+      setupDialog: false,
+      savedSnackbar: false,
+      removedSnackbar: false,
+      savedSnackbarText: "Host(s) saved to list.",
+      removedSnackbarText: "Host removed."
     };
   },
   computed: {

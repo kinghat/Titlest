@@ -57,10 +57,7 @@ export default {
     ...mapState({
       globals: state => state.globals.options,
       hosts: state => state.hosts.hosts
-    }),
-    logSelected: function() {
-      console.log(`LOG: computed -> selected: `, this.selected);
-    }
+    })
   },
   methods: {
     runSetup: async function() {
@@ -103,6 +100,7 @@ export default {
           console.log(`LOG: payload: `, payload);
         }
 
+        this.$emit("setSavedSnackbarValue", true);
         this.$emit("setDialogValue", false);
 
         browser.runtime.sendMessage({
