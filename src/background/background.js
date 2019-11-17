@@ -3,12 +3,12 @@ import store from "../store";
 
 // https://github.com/mozilla/webextension-polyfill/issues/74#issuecomment-406289372
 browser.menus = browser.menus || browser.contextMenus;
-/* clear persisted context menus: https://stackoverflow.com/a/38204762/934239
-create the right click context menu item */
+// clear persisted context menus: https://stackoverflow.com/a/38204762/934239
+// create the right click context menu item
 browser.menus.removeAll();
 browser.menus.create({
 	id: "test",
-	title: "add host to list",
+	title: "add hostname to Titlest",
 	contexts: ["page"],
 });
 // browser.contextMenus.removeAll(() => {
@@ -28,14 +28,16 @@ browser.commands.onCommand.addListener(async (command) => {
 				currentWindow: true,
 				active: true,
 			});
-			setHost(tab[0]);
+			await setHost(tab[0]);
+			notification(tab[0]);
 		}
 	} catch (error) {
 		console.log(`LOG: command -> error: `, error);
 	}
 });
-browser.menus.onClicked.addListener((info, tab) => {
-	setHost(tab);
+browser.menus.onClicked.addListener(async (info, tab) => {
+	await setHost(tab);
+	notification(tab);
 });
 
 store.subscribe((mutation, state) => {
@@ -272,19 +274,13 @@ async function setHost(tab) {
 	}
 }
 
-// browser.runtime.onMessage.addListener(async (msg, sender) => {
-//   console.log("BG page received message", msg, "from", sender);
-//   // console.log("Stored data", await browser.storage.local.get());
-// });
+function notification(tab) {
+	const hostName = new URL(tab.url).hostname;
 
-// browser.webNavigation.onCompleted.addListener(
-//   e => {
-//     console.log("userTitle event", store.state.hosts[0].userTitle);
-//   },
-//   { url: [{ hostEquals: document.location.hostname.toString }] },
-// );
-
-/* browser.browserAction.onClicked.addListener(function(tab) {
-  console.log(`Hello ${store.getters.foo}!`);
-});
- */
+	browser.notifications.create({
+		type: "basic",
+		iconUrl: tab.favIconUrl,
+		title: "Hostname added:",
+		message: `${hostName} has been added to Titlest.`,
+	});
+}
