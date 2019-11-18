@@ -20,7 +20,7 @@
           </v-fade-transition>
         </v-row>
       </v-expansion-panel-header>
-      <v-expansion-panel-content class="pt-6">
+      <v-expansion-panel-content class="pt-4">
         <ValidationObserver>
           <v-row no-gutters justify="center" align="center">
             <v-col cols="12">
@@ -89,6 +89,7 @@
               dense
             ></v-switch>
           </v-row>
+          <v-btn block color="error" class="mt-4" @click="removeHostName({index, host})">Remove Host</v-btn>
         </ValidationObserver>
       </v-expansion-panel-content>
     </v-expansion-panel>
@@ -132,7 +133,7 @@ export default {
         type: "updateTabs",
         ...payload
       });
-    }
+    },
     // userTitleValidationProxy(index, objectProperty, value) {
     //   if (!this.$refs.userTitleInput[index]) return;
     //   this.$refs.userTitleInput[index].validate(value).then(result => {
@@ -142,6 +143,18 @@ export default {
     //     }
     //   });
     // }
+    async removeHostName(payload) {
+      await this.$store.dispatch("hosts/removeHost", payload);
+
+      this.$emit("setRemovedSnackbarValue", true);
+      this.$emit("checkDialogValue");
+
+      browser.runtime.sendMessage({
+        type: "updateTabs",
+        action: "setTabsToOriginalTabTitles",
+        ...payload
+      });
+    }
   }
 };
 </script>

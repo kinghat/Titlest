@@ -50,7 +50,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (message.type === "updateSavedTabs") reloadInit();
 });
 
-browser.tabs.onUpdated.addListener(handleUpdated);
+browser.tabs.onUpdated.addListener(handleUpdatedTabs);
 
 async function reloadInit() {
 	try {
@@ -157,17 +157,25 @@ async function updateTabs(payload) {
 		});
 
 		for (const tab of tabs) {
+			if (payload.action === "setTabsToOriginalTabTitles") {
+				const originalTabTitle = getOriginalTabTitle(tab, host);
+
+				browser.tabs.executeScript(tab.id, {
+					code: `document.title = "${originalTabTitle}";`,
+				});
+				// setTabTitle(tab, host);
+			} else {
 			const loopCheck = preventDocumentLoops(tab, host);
 			if (loopCheck) {
 				setTabTitle(tab, host);
-			}
+			}}
 		}
 	} catch (error) {
 		console.log(`LOG: updateTabs -> error: `, error);
 	}
 }
 
-async function handleUpdated(tabId, changeInfo, tabInfo) {
+async function handleUpdatedTabs(tabId, changeInfo, tabInfo) {
 	try {
 		if (changeInfo.title) {
 			const hostName = new URL(tabInfo.url).hostname;
@@ -189,7 +197,7 @@ async function handleUpdated(tabId, changeInfo, tabInfo) {
 			}
 		}
 	} catch (error) {
-		console.log(`LOG: handleUpdated -> error: `, error);
+		console.log(`LOG: handleUpdatedTabs -> error: `, error);
 	}
 }
 
@@ -215,8 +223,7 @@ async function formatTabTitle(tab, host) {
 		const globalState = await getGlobalState();
 		let formattedTitle;
 
-		if (hostState)
-			formattedTitle = isAppended ? originalTabTitle + userTitle : userTitle;
+		if (hostState) formattedTitle = isAppended ? originalTabTitle + userTitle : userTitle;
 		if (!hostState || !globalState) formattedTitle = originalTabTitle;
 
 		return formattedTitle;
@@ -232,8 +239,7 @@ function preventDocumentLoops(tab, host) {
 	const { title, id } = tab;
 
 	if (hostState) {
-		if (isAppended && title === `${originalTabTitles[id]}${userTitle}`)
-			return;
+		if (isAppended && title === `${originalTabTitles[id]}${userTitle}`) return;
 		if (!isAppended && title === userTitle) return;
 	}
 

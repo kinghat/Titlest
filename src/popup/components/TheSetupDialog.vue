@@ -1,10 +1,10 @@
 <template>
   <v-dialog :value="value" persistent scrollable overlay-opacity=".90">
     <v-card max-height="400">
-      <v-card-title class="headline">Select host(s)</v-card-title>
+      <v-card-title class="headline justify-center">Select host(s)</v-card-title>
       <v-card-subtitle>NOTE: titles are applied to entire hostnames, not individual tabs.</v-card-subtitle>
       <v-divider></v-divider>
-      <v-card-text>
+      <v-card-text class="pb-0">
         <v-list>
           <v-list-item-group v-model="selected" multiple>
             <template v-for="(host, index) in hostList">
@@ -26,7 +26,6 @@
             </template>
           </v-list-item-group>
         </v-list>
-        {{selected}}
       </v-card-text>
       <v-card-actions>
         <v-btn block :disabled="!selected.length" color="green accent-4--text" @click="save">SAVE</v-btn>

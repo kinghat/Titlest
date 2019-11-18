@@ -2,13 +2,17 @@
   <v-app>
     <TheSetupDialog
       v-model="setupDialog"
+      v-if="setupDialog"
       @setDialogValue="setupDialog = $event"
       @setSavedSnackbarValue="savedSnackbar = $event"
     />
     <TheAppBar />
     <v-content>
       <v-container>
-        <TheList />
+        <TheList
+          @setRemovedSnackbarValue="removedSnackbar = $event"
+          @checkDialogValue="setSetupDialog"
+        />
       </v-container>
     </v-content>
     <v-snackbar v-model="savedSnackbar" color="success" :timeout="5000">
