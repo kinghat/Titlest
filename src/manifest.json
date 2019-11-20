@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 	"name": "Titlest",
 	"homepage_url": "http://localhost/",
-	"description": "an extension with the ability to replace or append a websites title",
+	"description": "an extension with the ability to append or overwrite a websites title",
 	"version": "2.0.0",
 	"permissions": [
 		"activeTab",
@@ -12,8 +12,7 @@
 		"storage",
 		"unlimitedStorage",
 		"contextMenus",
-		"notifications",
-		"webNavigation"
+		"notifications"
 	],
 	"background": {
 		"scripts": ["js/background.js"]
