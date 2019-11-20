@@ -80,8 +80,8 @@ export default {
       try {
         if (this.selected) {
           let payload = [];
+
           for (const [index, value] of this.selected.entries()) {
-            console.log(`LOG: index: `, index, value);
             const hostObject = {
               id: index,
               date: undefined,
@@ -92,15 +92,15 @@ export default {
               isAppended: true,
               hostBindings: []
             };
-            console.log(`LOG: hostObject: `, hostObject);
+
             payload.push(hostObject);
           }
+
           await this.$store.dispatch("hosts/setHosts", payload);
-          console.log(`LOG: payload: `, payload);
         }
 
         this.$emit("setSavedSnackbarValue", true);
-        this.$emit("setDialogValue", false);
+        this.$emit("setSetupDialogValue", false);
 
         browser.runtime.sendMessage({
           type: "updateSavedTabs"

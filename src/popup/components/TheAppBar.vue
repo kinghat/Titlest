@@ -10,7 +10,7 @@
     <v-btn icon @click="settingsDialog = true">
       <v-icon>mdi-settings</v-icon>
     </v-btn>
-    <TheSettingsDialog v-model="settingsDialog" @setDialogValue="settingsDialog = $event" />
+    <TheSettingsDialog v-model="settingsDialog" @setSettingsDialogValue="settingsDialog = $event" />
   </v-app-bar>
 </template>
 <script>

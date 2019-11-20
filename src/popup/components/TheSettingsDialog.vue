@@ -2,7 +2,6 @@
   <v-dialog :value="value" persistent scrollable overlay-opacity=".90">
     <v-card max-height="400">
       <v-card-title class="headline justify-center">Global Settings</v-card-title>
-      <!-- <v-card-subtitle>NOTE: titles are applied to entire hostnames, not individual tabs.</v-card-subtitle> -->
       <v-divider></v-divider>
       <v-card-text>
         <v-switch
@@ -65,7 +64,7 @@ export default {
   },
   methods: {
     close: function() {
-      this.$emit("setDialogValue", false);
+      this.$emit("setSettingsDialogValue", false);
     }
   }
 };

@@ -105,9 +105,7 @@ export default {
   name: "TheList",
   data() {
     return {
-      panel: [],
-      appendState: "",
-      key: 0
+      panel: []
     };
   },
   components: {
@@ -125,10 +123,8 @@ export default {
       // setHostProperty: "hosts/setHostProperty2"
     }),
     async hostPropertyHandler(payload) {
-      console.log(`LOG: hostPropertyHandler -> payload`, payload);
-      // this.setHostProperty(payload);
       await this.$store.dispatch("hosts/setHostProperty", payload);
-      // this.updateTabs(payload);
+
       browser.runtime.sendMessage({
         type: "updateTabs",
         ...payload
@@ -147,7 +143,7 @@ export default {
       await this.$store.dispatch("hosts/removeHost", payload);
 
       this.$emit("setRemovedSnackbarValue", true);
-      this.$emit("checkDialogValue");
+      this.$emit("checkSetupDialogValue");
 
       browser.runtime.sendMessage({
         type: "updateTabs",
