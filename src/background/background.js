@@ -67,7 +67,6 @@ async function reloadInit() {
 			}
 			if (host && host.hostState) {
 				const loopCheck = preventDocumentLoops(tab, host);
-				console.log(`LOG: init -> loopCheck: `, loopCheck);
 				if (loopCheck) {
 					setTabTitle(tab, host);
 				}
@@ -165,10 +164,11 @@ async function updateTabs(payload) {
 				});
 				// setTabTitle(tab, host);
 			} else {
-			const loopCheck = preventDocumentLoops(tab, host);
-			if (loopCheck) {
-				setTabTitle(tab, host);
-			}}
+				const loopCheck = preventDocumentLoops(tab, host);
+				if (loopCheck) {
+					setTabTitle(tab, host);
+				}
+			}
 		}
 	} catch (error) {
 		console.log(`LOG: updateTabs -> error: `, error);
@@ -223,7 +223,8 @@ async function formatTabTitle(tab, host) {
 		const globalState = await getGlobalState();
 		let formattedTitle;
 
-		if (hostState) formattedTitle = isAppended ? originalTabTitle + userTitle : userTitle;
+		if (hostState)
+			formattedTitle = isAppended ? originalTabTitle + userTitle : userTitle;
 		if (!hostState || !globalState) formattedTitle = originalTabTitle;
 
 		return formattedTitle;
@@ -239,7 +240,8 @@ function preventDocumentLoops(tab, host) {
 	const { title, id } = tab;
 
 	if (hostState) {
-		if (isAppended && title === `${originalTabTitles[id]}${userTitle}`) return;
+		if (isAppended && title === `${originalTabTitles[id]}${userTitle}`)
+			return;
 		if (!isAppended && title === userTitle) return;
 	}
 
@@ -275,8 +277,8 @@ async function setHost(tab) {
 			await store.dispatch("hosts/setHost", hostObject);
 			reloadInit();
 		}
-	} catch {
-		(error) => console.log(`LOG: setHost -> error: `, error);
+	} catch (error) {
+		console.log(`LOG: setHost -> error: `, error);
 	}
 }
 

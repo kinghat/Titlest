@@ -15,11 +15,9 @@ const actions = {};
 
 const mutations = {
 	[types.SET_GLOBAL_STATE](state, payload) {
-		console.log(`LOG: mutation => payload:`, payload);
 		state.options.globalState = payload;
 	},
 	[types.SET_NOTIFCATIONS](state, payload) {
-		console.log(`LOG: mutation => payload:`, payload);
 		state.options.notifications = payload;
 	},
 };

@@ -9,10 +9,7 @@
 	"scripts": {
 		"serve": "vue-cli-service build --mode=development --watch",
 		"build": "vue-cli-service build",
-		"build:dev": "vue-cli-service build --mode development",
-		"build:target": "vue-cli-service build src/popup/popup.js",
-		"build:target:dev": "vue-cli-service build src/popup/popup.js --mode develpoment",
-		"lint": "vue-cli-service lint"
+		"build:dev": "vue-cli-service build --mode development"
 	},
 	"dependencies": {
 		"core-js": "^3.4.1",
