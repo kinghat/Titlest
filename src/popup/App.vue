@@ -3,7 +3,7 @@
     <TheSetupDialog
       v-model="setupDialog"
       v-if="setupDialog"
-      @setDialogValue="setupDialog = $event"
+      @setSetupDialogValue="setupDialog = $event"
       @setSavedSnackbarValue="savedSnackbar = $event"
     />
     <TheAppBar />
@@ -11,7 +11,7 @@
       <v-container>
         <TheList
           @setRemovedSnackbarValue="removedSnackbar = $event"
-          @checkDialogValue="setSetupDialog"
+          @checkSetupDialogValue="setSetupDialog"
         />
       </v-container>
     </v-content>
