@@ -10,12 +10,12 @@
           color="red darken-3"
           hide-details
         ></v-switch>
-        <v-switch
+        <!-- <v-switch
           v-model="notifications"
           :label="`${(notifications && 'disable') || 'enable'} notifications`"
           color="orange darken-3"
           hide-details
-        ></v-switch>
+        ></v-switch>-->
       </v-card-text>
       <v-btn color="primary" @click="close">CLOSE</v-btn>
     </v-card>
