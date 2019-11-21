@@ -1,6 +1,8 @@
 # Titlest
 
-a simple extension to replace or append a websites title with whatever you want. the extension name is a play on the golf brand. no, i dont like golf.
+a simple extension to replace or append a websites title with whatever you want. the extension name is a play on the golf brand. no, im not a golfer.
+
+![alt text](res/popup.png "Popup Menu")
 
 ## Overview
 
@@ -10,44 +12,30 @@ the code is sloppy and probably redundant but its part of the learning process.
 
 ## Installation
 
-_before i push the extension to the respective browser stores i need to convert from sync storage to local storage. so be warned that your data could could be lost in an update. i also need to make it cross browser compatible with firefox._
+> ~~before i push the extension to the respective browser stores i need to convert from sync storage to local storage. so be warned that your data could could be lost in an update.~~ i also need to make it cross browser compatible with firefox.\_
 
--   first you need to put the files on your local system by cloning or downloading the repository and extracting it.
+-  first you need to download the zip containing the compiled code for the [latest release](https://github.com/kinghat/Titlest/releases) and extract it to a directory of your choosing.
 
--   to install in chrome go to `chrome://extensions/` in your navigation bar. turn on "Developer Mode" in the top right and the click on the "Load unpacked" in the top left. select the `src/` directory. it should now be loaded as an "unpacked extension."
+-  to install in chrome go to `chrome://extensions/` in your navigation bar. turn on "Developer Mode" in the top right and the click on the "Load unpacked" in the top left. select the directory you extracted the zip to. it should now be loaded as an "unpacked extension."
 
 ## Development
 
 ### Project setup
 
-```
-yarn install
-```
+#### Clone or download the repository
 
-#### Compiles and hot-reloads for development
+use whichever method you want to obtain the code from the repo
 
-```
-yarn run serve
-```
-
-#### Compiles and minifies for production
+#### Compile and hot-reload for development
 
 ```
-yarn run build
+yarn serve
+npm run serve
 ```
 
-#### Run your tests
+#### Compile and minify for production
 
 ```
-yarn run test
+yarn build
+npm run build
 ```
-
-#### Lints and fixes files
-
-```
-yarn run lint
-```
-
-#### Customize configuration
-
-See [Configuration Reference](https://cli.vuejs.org/config/).
