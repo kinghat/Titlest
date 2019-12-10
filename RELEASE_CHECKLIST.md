@@ -12,6 +12,7 @@
 
    -  [ ] update `CHANGELOG.md` \*\*
    -  [ ] update `package.json` version property
+   -  [ ] update `manifest.json` version property
 
 -  [ ] commit changes to `release` branch
 -  [ ] push finalized `release` branch to github

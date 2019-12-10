@@ -3,7 +3,7 @@
 	"name": "Titlest",
 	"homepage_url": "http://localhost/",
 	"description": "an extension with the ability to append or overwrite a websites title",
-	"version": "2.0.0",
+	"version": "2.0.2",
 	"permissions": [
 		"activeTab",
 		"tabs",
